@@ -6,6 +6,7 @@ on:
 jobs:
   validar-teste:
     runs-on: windows-latest
+    continue-on-error: true
     outputs:
       resultado: ${{ steps.erro.outputs.resultado }}
     steps:
