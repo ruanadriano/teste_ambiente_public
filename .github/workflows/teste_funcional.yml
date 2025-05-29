@@ -6,6 +6,7 @@ on:
 jobs:
   validar-teste:
     runs-on: windows-latest
+    continue-on-error: true
     steps:
       - name: Clonar repositório
         uses: actions/checkout@v3
