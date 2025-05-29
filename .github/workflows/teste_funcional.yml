@@ -18,8 +18,3 @@ jobs:
 
       - name: Simular teste funcional com erro aleatório
         run: python scripts/teste_funcional.py
-
-jobs:
-  deploy-producao:
-    environment:
-      name: producao
