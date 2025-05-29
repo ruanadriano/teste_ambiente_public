@@ -1,12 +1,11 @@
-name: Teste Funcional Simulado
+name: Teste com Ambiente de Produção
 
 on:
-  workflow_dispatch:  # permite execução manual
+  workflow_dispatch:
 
 jobs:
-  teste-funcional:
+  validar-teste:
     runs-on: windows-latest
-
     steps:
       - name: Clonar repositório
         uses: actions/checkout@v3
@@ -16,5 +15,26 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Simular teste funcional com erro aleatório
+      - name: Rodar teste funcional simulado
+        id: validacao
         run: python scripts/teste_funcional.py
+
+  deploy-automatico:
+    needs: validar-teste
+    runs-on: windows-latest
+    if: ${{ needs.validar-teste.result == 'success' }}
+    environment:
+      name: producao
+    steps:
+      - name: Mensagem de deploy automático
+        run: echo "Deploy automático liberado e realizado com sucesso."
+
+  deploy-manual:
+    needs: validar-teste
+    runs-on: windows-latest
+    if: ${{ needs.validar-teste.result == 'failure' }}
+    environment:
+      name: producao 
+    steps:
+      - name: Aguardando aprovação manual
+        run: echo "Teste funcional falhou. Deploy só será executado após aprovação manual."
