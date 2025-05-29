@@ -6,7 +6,8 @@ on:
 jobs:
   validar-teste:
     runs-on: windows-latest
-    continue-on-error: true
+    outputs:
+      resultado: ${{ steps.erro.outputs.resultado }}
     steps:
       - name: Clonar repositório
         uses: actions/checkout@v3
@@ -16,26 +17,33 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Rodar teste funcional simulado
-        id: validacao
-        run: python scripts/teste_funcional.py
+      - name: Rodar script e capturar erro
+        id: erro
+        shell: pwsh
+        run: |
+          python scripts/teste_funcional.py
+          if ($LASTEXITCODE -eq 0) {
+            echo "resultado=sucesso" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "resultado=falha" >> $env:GITHUB_OUTPUT
+          }
 
   deploy-automatico:
     needs: validar-teste
     runs-on: windows-latest
-    if: ${{ needs.validar-teste.result == 'success' }}
+    if: ${{ needs.validar-teste.outputs.resultado == 'sucesso' }}
     environment:
       name: producao-auto
     steps:
-      - name: Mensagem de deploy automático
-        run: echo "Deploy automático liberado e realizado com sucesso."
+      - name: Deploy automático
+        run: echo "Deploy automático liberado com sucesso."
 
   deploy-manual:
     needs: validar-teste
     runs-on: windows-latest
-    if: ${{ needs.validar-teste.result == 'failure' }}
+    if: ${{ needs.validar-teste.outputs.resultado == 'falha' }}
     environment:
-      name: producao 
+      name: producao
     steps:
-      - name: Aguardando aprovação manual
-        run: echo "Teste funcional falhou. Deploy só será executado após aprovação manual."
+      - name: Deploy com aprovação manual
+        run: echo "Teste falhou. Aguardando aprovação para deploy manual."
