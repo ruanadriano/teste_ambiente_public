@@ -1,0 +1,25 @@
+name: Teste Funcional Simulado
+
+on:
+  workflow_dispatch:  # permite execução manual
+
+jobs:
+  teste-funcional:
+    runs-on: windows-latest
+
+    steps:
+      - name: Clonar repositório
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Simular teste funcional com erro aleatório
+        run: python scripts/teste_funcional.py
+
+jobs:
+  deploy-producao:
+    environment:
+      name: producao
