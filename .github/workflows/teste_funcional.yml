@@ -24,7 +24,7 @@ jobs:
     runs-on: windows-latest
     if: ${{ needs.validar-teste.result == 'success' }}
     environment:
-      name: producao
+      name: producao-auto
     steps:
       - name: Mensagem de deploy automático
         run: echo "Deploy automático liberado e realizado com sucesso."
