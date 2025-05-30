@@ -2,8 +2,8 @@ import sys
 import random
 
 # Simula execução de cálculo de erro
-erro_atual = 6
-erro_anterior = 7
+erro_atual = 4
+erro_anterior = 4
 
 print(f"Erro atual simulado: {erro_atual}%")
 print(f"Erro anterior simulado: {erro_anterior}%")
